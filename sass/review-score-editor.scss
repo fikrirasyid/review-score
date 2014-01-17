@@ -1,0 +1,32 @@
+#review-score{
+	.review-aspects{
+		margin: 20px 0 40px;
+		width: 100%;
+
+		thead,
+		tfoot{
+			background: #efefef;
+		}
+
+		th,
+		td{
+			padding: 5px;
+			border-bottom: 1px solid #dfdfdf;
+
+			.review-score-scale{
+				color: #afafaf;
+			}
+		}
+
+		tfoot{
+			td{
+				border-bottom: none;
+				padding: 5px 10px;
+
+				&:first-child{
+					text-align: right;
+				}
+			}
+		}
+	}
+}

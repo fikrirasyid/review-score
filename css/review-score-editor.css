@@ -1,0 +1,24 @@
+#review-score .review-aspects {
+  margin: 20px 0 40px;
+  width: 100%;
+}
+#review-score .review-aspects thead,
+#review-score .review-aspects tfoot {
+  background: #efefef;
+}
+#review-score .review-aspects th,
+#review-score .review-aspects td {
+  padding: 5px;
+  border-bottom: 1px solid #dfdfdf;
+}
+#review-score .review-aspects th .review-score-scale,
+#review-score .review-aspects td .review-score-scale {
+  color: #afafaf;
+}
+#review-score .review-aspects tfoot td {
+  border-bottom: none;
+  padding: 5px 10px;
+}
+#review-score .review-aspects tfoot td:first-child {
+  text-align: right;
+}
