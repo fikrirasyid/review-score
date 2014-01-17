@@ -199,12 +199,23 @@ class Review_Score{
 		if( !current_user_can( 'edit_posts' ) ) return;
 
 		// Updating process		
+		// Get current value. We'll match it later for deleting purpose
+		$review_score_to_be_deleted = $this->get_review_score( $post_id );
+
 		// Find review score key and save it to the DB
 		foreach ($_POST as $key => $value) {
 			if( substr( $key, 0, strlen( $this->prefix_label ) ) === $this->prefix_label ){
+				unset( $review_score_to_be_deleted[$key] );
 				update_post_meta( $post_id, $key, intval( $value ) );				
 			}
 		} 
+
+		// Delete "removed" review score
+		if( !empty( $review_score_to_be_deleted ) ){
+			foreach ($review_score_to_be_deleted as $key => $post_meta) {
+				delete_post_meta( $post_id, $key, $post_meta['value'] );
+			}
+		}
 	}
 
 	/**

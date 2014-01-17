@@ -31,6 +31,16 @@
               : match
             ;
           });
-        };        
+        };     
+
+        /**
+         * Remove aspect row
+         */   
+        $( '#review-score' ).on( 'click', '.remove-review-aspect', function(e){
+            e.preventDefault();
+            $(this).parents('tr').fadeOut(function(){
+                $(this).remove();
+            });
+        });
     })
 })(jQuery)
