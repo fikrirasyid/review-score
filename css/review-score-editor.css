@@ -6,12 +6,27 @@
 #review-score .review-aspects tfoot {
   background: #efefef;
 }
-#review-score .review-aspects th,
-#review-score .review-aspects td {
-  padding: 5px;
+#review-score .review-aspects thead th,
+#review-score .review-aspects tfoot th {
+  border-top: 1px solid #dfdfdf;
   border-bottom: 1px solid #dfdfdf;
+  border-left: 1px solid #dfdfdf;
 }
-#review-score .review-aspects th .review-score-scale,
+#review-score .review-aspects thead th:last-child,
+#review-score .review-aspects tfoot th:last-child {
+  border-right: 1px solid #dfdfdf;
+}
+#review-score .review-aspects th {
+  padding: 9px 10px;
+}
+#review-score .review-aspects td {
+  padding: 5px 10px;
+  border-bottom: 1px solid #dfdfdf;
+  border-left: 1px solid #dfdfdf;
+}
+#review-score .review-aspects td:last-child {
+  border-right: 1px solid #dfdfdf;
+}
 #review-score .review-aspects td .review-score-scale {
   color: #afafaf;
 }

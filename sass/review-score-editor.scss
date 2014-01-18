@@ -3,15 +3,34 @@
 		margin: 20px 0 40px;
 		width: 100%;
 
+
 		thead,
 		tfoot{
 			background: #efefef;
+
+			th{
+				border-top: 1px solid #dfdfdf;
+				border-bottom: 1px solid #dfdfdf;
+				border-left: 1px solid #dfdfdf;
+
+				&:last-child{
+					border-right: 1px solid #dfdfdf;
+				}
+			}
 		}
 
-		th,
+		th{
+			padding: 9px 10px;
+		}
+
 		td{
-			padding: 5px;
+			padding: 5px 10px;
 			border-bottom: 1px solid #dfdfdf;
+			border-left: 1px solid #dfdfdf;
+
+			&:last-child{
+				border-right: 1px solid #dfdfdf;
+			}
 
 			.review-score-scale{
 				color: #afafaf;

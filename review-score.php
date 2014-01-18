@@ -109,7 +109,7 @@ class Review_Score{
 		$review_score = $this->get_review_score( $post_id );
 		?>
 			<h3>Review Aspects</h3>
-			<table class="review-aspects">
+			<table cellspacing="0" class="review-aspects">
 				<thead>
 					<tr>
 						<th>Aspects</th>
