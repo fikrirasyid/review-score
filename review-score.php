@@ -219,16 +219,23 @@ class Review_Score{
 			update_post_meta( $post_id, '_review_score_use', 'yes' );
 		} else {
 			update_post_meta( $post_id, '_review_score_use', 'no' );
+			return;
 		}
 
 		// Get current value. We'll match it later for deleting purpose
 		$review_score_to_be_deleted = $this->get_review_score( $post_id );
+
+		// Collect all _review_score_label, calculate its average
+		$review_score_total = array();
 
 		// Find review score key and save it to the DB
 		foreach ($_POST as $key => $value) {
 			if( substr( $key, 0, strlen( $this->prefix_label ) ) === $this->prefix_label ){
 				unset( $review_score_to_be_deleted[$key] );
 				update_post_meta( $post_id, $key, intval( $value ) );				
+
+				// push value to review score total
+				array_push( $review_score_total, intval( $value ) );
 			}
 		} 
 
@@ -238,6 +245,12 @@ class Review_Score{
 				delete_post_meta( $post_id, $key, $post_meta['value'] );
 			}
 		}
+
+		// Calculate the average then save it
+		$review_score_sum = array_sum( $review_score_total );
+		$review_score_count = count( $review_score_total );
+		$review_score_avg = $review_score_sum / $review_score_count;
+		update_post_meta( $post_id, '_review_score_average', $review_score_avg );
 	}
 
 	/**
@@ -321,24 +334,44 @@ class Review_Score{
 		if( get_post_meta( $post->ID, '_review_score_use', true ) == 'yes' ){
 			$scores = $this->get_review_score( $post->ID );
 
+			$review_score = '<div class="review-score-wrap">';
+			$review_score .= '<h2 class="section-title review-score-title">'. apply_filters( "review_score_title", __( "Review Score", "review_score" ) ) .'</h2>';
+
 			if( !empty( $scores ) ){
-				$review_score = '<div class="review-score-wrap">';
+				$review_score .= '<div class="review-score-average">';
+				$review_score .= '<div class="review-score-average-score-label">' . apply_filters( "review_score_average_score_label", __( "Average Score", "review_score" ) ) . '</div>';
+				$review_score .= '<div class="review-score-average-score-value">' . get_post_meta( $post->ID, '_review_score_average', true ) . '</div>';
+				$review_score .= '</div>';
 
 				// Print review score data
 				foreach ( $scores as $key => $score ) {
 					$review_score .= '<div class="review-score-item">
 										<div class="review-score-item-label">'. $score["label"] .'</div>
 										<div class="review-score-item-score">'. $score["value"] .'</div>
-										<div class="review-score-item-bar" data-score="'. $score["value"] .'"></div>
+										<div class="review-score-item-bar" data-score="'. $score["value"] .'">'. $this->score_to_stars( $score["value"] ) .'</div>
 									</div>';
 				}
-				$review_score .= '</div>';
-
-				$content .= $review_score;
 			}
+
+			$review_score .= '</div>';
+			$content .= $review_score;			
 		}
 
 		return $content;
+	}
+
+	/**
+	 * Display stars for review score
+	 *
+	 * @return void
+	 */
+	function score_to_stars( $score = 10 ){
+		$stars = '';
+		for ($i=1; $i <= $score ; $i++) { 
+			$stars .= '<div class="review-score-star">'. $i .'</div>';
+		}
+
+		return $stars;
 	}
 }
 $review_score = new Review_Score( true );
