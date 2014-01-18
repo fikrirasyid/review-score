@@ -58,6 +58,7 @@ class Review_Score{
 		add_action( 'admin_print_styles', array( &$this, 'styling_editor' ) );
 		add_action( 'add_meta_boxes', array( &$this, 'meta_boxes_add' ) );
 		add_action( 'save_post', array( &$this, 'meta_box_save' ) );
+		add_filter( 'the_content', array( &$this, 'display' ) );
 	}	
 
 	/**
@@ -309,6 +310,35 @@ class Review_Score{
 		} else {
 			return false;
 		}
+	}
+
+	/**
+	 * Display review score on the_content
+	 */
+	function display( $content ){
+		global $post;
+
+		if( get_post_meta( $post->ID, '_review_score_use', true ) == 'yes' ){
+			$scores = $this->get_review_score( $post->ID );
+
+			if( !empty( $scores ) ){
+				$review_score = '<div class="review-score-wrap">';
+
+				// Print review score data
+				foreach ( $scores as $key => $score ) {
+					$review_score .= '<div class="review-score-item">
+										<div class="review-score-item-label">'. $score["label"] .'</div>
+										<div class="review-score-item-score">'. $score["value"] .'</div>
+										<div class="review-score-item-bar" data-score="'. $score["value"] .'"></div>
+									</div>';
+				}
+				$review_score .= '</div>';
+
+				$content .= $review_score;
+			}
+		}
+
+		return $content;
 	}
 }
 $review_score = new Review_Score( true );
