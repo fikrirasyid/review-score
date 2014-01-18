@@ -21,6 +21,10 @@
             var new_aspect = template.format( aspect_label, '_review_score_label_' + aspect_label );
             $( '#review-score tbody' ).append( new_aspect );
             $('#new-review-aspect').val('');
+
+            if( $('#no-review-score').length > 0 ){
+                $( '#no-review-score' ).remove();
+            }
         }
 
         String.prototype.format = function() {
@@ -41,6 +45,18 @@
             $(this).parents('tr').fadeOut(function(){
                 $(this).remove();
             });
+        });
+
+        /**
+         * Use review score system
+         */
+        var review_score_use = $('#review-score-post-settings');
+        $( '#_review_score_use').change(function(e){
+            if( $(this).is( ':checked' ) ){
+                review_score_use.fadeIn();
+            } else {
+                review_score_use.fadeOut();
+            }
         });
     })
 })(jQuery)

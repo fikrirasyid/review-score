@@ -105,62 +105,75 @@ class Review_Score{
 		// Adding Nonce
 		wp_nonce_field( 'review_score_nonce', '_wpnonce_review_score_nonce' );		
 
+		// Check review score usage
+		if( get_post_meta( $post->ID, '_review_score_use', true ) == 'yes'){
+			$review_score_visibility = 'style="display: block;"';
+			$review_score_use_check = 'checked="checked"';
+		} else {
+			$review_score_visibility = 'style="display: none;"';
+			$review_score_use_check = '';
+		}
+
 		// Get stored value
-		$review_score = $this->get_review_score( $post_id );
+		$review_score = $this->get_review_score( $post->ID );
 		?>
-			<h3>Review Aspects</h3>
-			<table cellspacing="0" class="review-aspects">
-				<thead>
-					<tr>
-						<th>Aspects</th>
-						<th>Score</th>
-						<th></th>
-					</tr>
-				</thead>
-				<tbody>
-					<?php 
-						if( empty( $review_score ) ){
-							echo '<tr><td colspan="3">no review score, yet.</td></tr>';
-						} else {
-							foreach ($review_score as $key => $aspect) {
-								?>
-								<tr>
-									<td><?php echo $aspect['label']; ?></td>
-									<td>
-										<?php $this->select_score( $key, $aspect['value'] ); ?> / 10</span>
-									</td>
-									<td>
-										<a href="#" class="remove-review-aspect">Remove</a>
-									</td>
-								</tr>
-								<?php
+			<p><label for="_review_score_use"><input type="checkbox" name="_review_score_use" value="yes" id="_review_score_use" <?php echo $review_score_use_check; ?>>Use Review Score for this content.</label></p>
+			
+			<div id="review-score-post-settings" <?php echo $review_score_visibility; ?>>
+				<h3>Review Aspects</h3>
+				<table cellspacing="0" class="review-aspects">
+					<thead>
+						<tr>
+							<th>Aspects</th>
+							<th>Score</th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody>
+						<?php 
+							if( empty( $review_score ) ){
+								echo '<tr id="no-review-score"><td colspan="3">no review score, yet.</td></tr>';
+							} else {
+								foreach ($review_score as $key => $aspect) {
+									?>
+									<tr>
+										<td><?php echo $aspect['label']; ?></td>
+										<td>
+											<?php $this->select_score( $key, $aspect['value'] ); ?> / 10</span>
+										</td>
+										<td>
+											<a href="#" class="remove-review-aspect">Remove</a>
+										</td>
+									</tr>
+									<?php
+								}
 							}
-						}
-					?>					
-				</tbody>
-				<!-- 
-				<tfoot>
-					<tr>
-						<td>
-							Total Score
-						</td>
-						<td>
-							9
-						</td>
-						<td>
-							
-						</td>
-					</tr>
-				</tfoot> 
-				-->
-			</table>
+						?>					
+					</tbody>
+					<!-- 
+					<tfoot>
+						<tr>
+							<td>
+								Total Score
+							</td>
+							<td>
+								9
+							</td>
+							<td>
+								
+							</td>
+						</tr>
+					</tfoot> 
+					-->
+				</table>
 
 
-			<h3>Add New Aspect</h3>
-			<p>
-				<input id="new-review-aspect" type="text" placeholder="Type New Aspect Here..">
-				<button id="add-review-aspect" class="button">Add</button>
-			</p>
+				<h3>Add New Aspect</h3>
+				<p>
+					<input id="new-review-aspect" type="text" placeholder="Type New Aspect Here..">
+					<button id="add-review-aspect" class="button">Add</button>
+				</p>				
+			</div><!-- #review-score-post-settings -->
 
 			<script type="text/template" id="template-aspect">
 				<tr>
@@ -199,6 +212,14 @@ class Review_Score{
 		if( !current_user_can( 'edit_posts' ) ) return;
 
 		// Updating process		
+
+		// Update review score usage status
+		if( isset( $_POST['_review_score_use'] ) && $_POST['_review_score_use'] == 'yes' ){
+			update_post_meta( $post_id, '_review_score_use', 'yes' );
+		} else {
+			update_post_meta( $post_id, '_review_score_use', 'no' );
+		}
+
 		// Get current value. We'll match it later for deleting purpose
 		$review_score_to_be_deleted = $this->get_review_score( $post_id );
 
