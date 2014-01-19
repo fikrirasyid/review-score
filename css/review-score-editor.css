@@ -31,8 +31,7 @@
   color: #afafaf;
 }
 #review-score .review-aspects tfoot td {
-  border-bottom: none;
-  padding: 5px 10px;
+  padding: 10px 10px;
 }
 #review-score .review-aspects tfoot td:first-child {
   text-align: right;

@@ -163,22 +163,17 @@ class Review_Score{
 								}
 							}
 						?>					
-					</tbody>
-					<!-- 
+					</tbody>					 
 					<tfoot>
 						<tr>
 							<td>
-								Total Score
+								Average Score
 							</td>
-							<td>
-								9
-							</td>
-							<td>
-								
+							<td colspan="2">
+								<?php echo get_post_meta( $post->ID, '_review_score_average', true ); ?>
 							</td>
 						</tr>
-					</tfoot> 
-					-->
+					</tfoot> 					
 				</table>
 
 
