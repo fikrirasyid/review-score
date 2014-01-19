@@ -58,6 +58,7 @@ class Review_Score{
 		add_action( 'admin_print_styles', array( &$this, 'styling_editor' ) );
 		add_action( 'add_meta_boxes', array( &$this, 'meta_boxes_add' ) );
 		add_action( 'save_post', array( &$this, 'meta_box_save' ) );
+		add_action( 'wp_head', array( &$this, 'styling_frontend' ) );
 		add_filter( 'the_content', array( &$this, 'display' ) );
 	}	
 
@@ -80,6 +81,18 @@ class Review_Score{
 		    wp_enqueue_style( 'review-score-editor' );
 			wp_enqueue_script( 'review-score-editor' );			
 		}
+	}
+
+	/**
+	 * Adding scripts & stylesheet to front end page
+	 * 
+	 * @since 0.1
+	 * 
+	 * @return void
+	 */	
+	function styling_frontend(){
+		wp_register_style( 'review-score-frontend', REVIEW_SCORE_URL . '/css/review-score-frontend.css', array(), false, 'screen' );
+	    wp_enqueue_style( 'review-score-frontend' );
 	}
 
 	/**
@@ -336,11 +349,11 @@ class Review_Score{
 
 			$review_score = '<div class="review-score-wrap">';
 			$review_score .= '<h2 class="section-title review-score-title">'. apply_filters( "review_score_title", __( "Review Score", "review_score" ) ) .'</h2>';
-
+			$review_score .= '<div class="review-score-content">';
 			if( !empty( $scores ) ){
 				$review_score .= '<div class="review-score-average">';
-				$review_score .= '<div class="review-score-average-score-label">' . apply_filters( "review_score_average_score_label", __( "Average Score", "review_score" ) ) . '</div>';
-				$review_score .= '<div class="review-score-average-score-value">' . get_post_meta( $post->ID, '_review_score_average', true ) . '</div>';
+				$review_score .= '<div class="review-score-average-label">' . apply_filters( "review_score_average_score_label", __( "Average Score", "review_score" ) ) . '</div>';
+				$review_score .= '<div class="review-score-average-score">' . get_post_meta( $post->ID, '_review_score_average', true ) . '</div>';
 				$review_score .= '</div>';
 
 				// Print review score data
@@ -352,7 +365,7 @@ class Review_Score{
 									</div>';
 				}
 			}
-
+			$review_score .= '</div>';
 			$review_score .= '</div>';
 			$content .= $review_score;			
 		}
@@ -367,8 +380,12 @@ class Review_Score{
 	 */
 	function score_to_stars( $score = 10 ){
 		$stars = '';
-		for ($i=1; $i <= $score ; $i++) { 
-			$stars .= '<div class="review-score-star">'. $i .'</div>';
+		for ($i=1; $i <= 10 ; $i++) { 
+			if( $i <= $score ){
+				$stars .= '<div class="review-score-star starred">'. $i .'</div>';
+			} else {
+				$stars .= '<div class="review-score-star">'. $i .'</div>';				
+			}
 		}
 
 		return $stars;

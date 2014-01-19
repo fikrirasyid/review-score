@@ -1,0 +1,70 @@
+/**
+ * Mixins
+ */
+/**
+ * Styling
+ */
+.review-score-wrap .review-score-content {
+  position: relative;
+  padding-left: 120px;
+}
+.review-score-wrap .review-score-content .review-score-average {
+  display: block;
+  width: 70px;
+  height: 107px;
+  padding: 15px;
+  background: green;
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: white;
+  font-weight: lighter;
+  line-height: 1;
+  text-align: center;
+}
+.review-score-wrap .review-score-content .review-score-average .review-score-average-label {
+  margin-bottom: 10px;
+}
+.review-score-wrap .review-score-content .review-score-average .review-score-average-score {
+  font-size: 55px;
+  height: 55px;
+  overflow: hidden;
+}
+.review-score-wrap .review-score-content .review-score-item {
+  margin-bottom: 10px;
+  position: relative;
+  line-height: 1;
+}
+.review-score-wrap .review-score-content .review-score-item:after {
+  content: ".";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+}
+.review-score-wrap .review-score-content .review-score-item .review-score-item-score {
+  display: inline-block;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+.review-score-wrap .review-score-content .review-score-item .review-score-item-bar {
+  margin-top: 8px;
+}
+.review-score-wrap .review-score-content .review-score-item .review-score-item-bar:after {
+  content: ".";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+}
+.review-score-wrap .review-score-content .review-score-item .review-score-item-bar .review-score-star {
+  float: left;
+  width: 10%;
+  height: 15px;
+  text-indent: -99999em;
+  background: gray;
+}
+.review-score-wrap .review-score-content .review-score-item .review-score-item-bar .review-score-star.starred {
+  background: orange;
+}

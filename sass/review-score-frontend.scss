@@ -1,0 +1,82 @@
+/**
+ * Mixins
+ */
+@mixin clearfix{
+	&:after{
+		content:".";
+		display:block; 
+		height:0; 
+		clear:both; 
+		visibility:hidden;
+	}
+}
+
+/**
+ * Styling
+ */
+.review-score-wrap{
+	.review-score-content{
+		position: relative;
+		padding-left: 120px;
+
+		.review-score-average{
+			display: block;
+			width: 70px;
+			height: 107px;
+			padding: 15px;
+			background: green;
+			position: absolute;
+			top: 0;
+			left: 0;
+			color: white;
+			font-weight: lighter;
+			line-height: 1;
+			text-align: center;
+
+			.review-score-average-label{
+				margin-bottom: 10px;
+			}
+
+			.review-score-average-score{
+				font-size: 55px;
+				height: 55px;
+				overflow: hidden;
+			}
+		}
+
+		.review-score-item{
+			@include clearfix;
+			margin-bottom: 10px;
+			position: relative;
+			line-height: 1;
+
+			.review-score-item-label{
+				// float: left;
+			}
+
+			.review-score-item-score{
+				display: inline-block;
+				position: absolute;
+				top: 0;
+				right: 0;
+			}
+
+			.review-score-item-bar{
+				@include clearfix;
+				margin-top: 8px;
+
+				.review-score-star{
+					float: left;
+					width: 10%;
+					height: 15px;
+					text-indent: -99999em;
+					background: gray;
+
+					&.starred{
+						background: orange;						
+					}
+				}
+			}
+		}
+	}
+}
