@@ -339,7 +339,7 @@ class Review_Score{
 	function display( $content ){
 		global $post;
 
-		if( get_post_meta( $post->ID, '_review_score_use', true ) == 'yes' ){
+		if( get_post_meta( $post->ID, '_review_score_use', true ) == 'yes' && is_singular( $this->post_type_support ) ){
 			$scores = $this->get_review_score( $post->ID );
 
 			$review_score = '<div class="review-score-wrap">';
