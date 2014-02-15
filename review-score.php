@@ -314,9 +314,35 @@ class Review_Score{
 			if( $this->is_review_score_label( $key ) ){		
 				$review_score[$key] = array( 'label' => $this->_prepare_review_score_key( $key ), 'value' => $post_meta[0] );
 			}
-		}		
+		}
 
-		return $review_score;
+		return $this->_prepare_get_review_score( $review_score );
+	}
+
+	/**
+	 * Prepare get_review_score. Make it override-able from other methods
+	 * 
+	 * @since 0.1
+	 * 
+	 * @return void
+	 */	
+	function _prepare_get_review_score( $review_score ){
+		global $post;
+
+		if( $this->predefined_review_score_fields() ){
+			$fields = $this->predefined_review_score_fields();
+
+			$predefined_review_score = array();
+
+			foreach ( $fields as $key => $field ) {
+				$meta_key = $this->prefix_label . str_replace(' ', '_', $field );
+
+				$predefined_review_score[ $meta_key ] = array( 'label' => $field, 'value' => get_post_meta( $post->ID, $meta_key, true ) );
+			}
+			return $predefined_review_score;			
+		} else {
+			return $review_score;
+		}
 	}
 
 	/**
