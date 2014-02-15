@@ -145,7 +145,10 @@ class Review_Score{
 						<tr>
 							<th>Aspects</th>
 							<th>Score</th>
+
+							<?php if( !$this->predefined_review_score_fields() ) : ?>
 							<th></th>
+							<?php endif; ?>
 						</tr>
 					</thead>
 					<tbody>
@@ -160,9 +163,11 @@ class Review_Score{
 										<td>
 											<?php $this->select_score( $key, $aspect['value'] ); ?> / 10</span>
 										</td>
+										<?php if( !$this->predefined_review_score_fields() ) : ?>
 										<td>
 											<a href="#" class="remove-review-aspect">Remove</a>
 										</td>
+										<?php endif; ?>
 									</tr>
 									<?php
 								}
@@ -181,12 +186,13 @@ class Review_Score{
 					</tfoot> 					
 				</table>
 
-
+				<?php if( !$this->predefined_review_score_fields() ): ?>
 				<h3>Add New Aspect</h3>
 				<p>
 					<input id="new-review-aspect" type="text" placeholder="Type New Aspect Here..">
 					<button id="add-review-aspect" class="button">Add</button>
 				</p>				
+				<?php endif; ?>
 			</div><!-- #review-score-post-settings -->
 
 			<script type="text/template" id="template-aspect">
