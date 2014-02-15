@@ -26,14 +26,11 @@ class Review_Score{
 	public $review_scale;
 	public $prefix_label;
 
-	function __construct( $init = false ){
+	function __construct(){
 		$this->post_type_support = $this->post_type_support();
 		$this->review_scale = 10;
 		$this->prefix_label = '_review_score_label_';
-
-		if( $init ){
-			$this->hook();
-		}
+		$this->hook();
 	}
 
 	/**
@@ -386,4 +383,4 @@ class Review_Score{
 		return $stars;
 	}
 }
-$review_score = new Review_Score( true );
+$review_score = new Review_Score();
