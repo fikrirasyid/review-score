@@ -44,6 +44,10 @@ class Review_Score{
 		return "post";
 	}
 
+	function comment_vote_support(){
+		return false;
+	}
+
 	/**
 	 * Hooking methods to WP environment
 	 * 
@@ -117,7 +121,7 @@ class Review_Score{
 		wp_nonce_field( 'review_score_nonce', '_wpnonce_review_score_nonce' );		
 
 		// Check review score usage
-		if( get_post_meta( $post->ID, '_review_score_use', true ) == 'yes'){
+		if( $this->is_use_review_score() ){
 			$review_score_visibility = 'style="display: block;"';
 			$review_score_use_check = 'checked="checked"';
 		} else {
@@ -331,12 +335,42 @@ class Review_Score{
 	}
 
 	/**
+	 * Conditional tag for checking review_score_use status
+	 *
+	 * @return bool
+	 */
+	function is_use_review_score(){
+		global $post;
+
+		if( get_post_meta( $post->ID, '_review_score_use', true ) == 'yes' ){
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * Check whether we should display review score UI
+	 *
+	 * @return bool
+	 */
+	function is_display_review_score(){
+		global $post;
+
+		if( $this->is_use_review_score() && is_singular( $this->post_type_support ) ){
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	/**
 	 * Display review score on the_content
 	 */
 	function display( $content ){
 		global $post;
 
-		if( get_post_meta( $post->ID, '_review_score_use', true ) == 'yes' && is_singular( $this->post_type_support ) ){
+		if( $this->is_display_review_score() ){
 			$scores = $this->get_review_score( $post->ID );
 
 			$review_score = '<div class="review-score-wrap">';
