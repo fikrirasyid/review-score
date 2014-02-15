@@ -48,6 +48,10 @@ class Review_Score{
 		return false;
 	}
 
+	function predefined_review_score_fields(){
+		return false;
+	}
+
 	/**
 	 * Hooking methods to WP environment
 	 * 
