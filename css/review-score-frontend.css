@@ -68,3 +68,6 @@
 .review-score-wrap .review-score-content .review-score-item .review-score-item-bar .review-score-star.starred {
   background: orange;
 }
+.review-score-wrap .review-score-content .review-score-item .review-score-item-select {
+  display: none;
+}

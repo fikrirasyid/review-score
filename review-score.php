@@ -65,6 +65,7 @@ class Review_Score{
 		add_action( 'save_post', array( &$this, 'meta_box_save' ) );
 		add_action( 'wp_head', array( &$this, 'styling_frontend' ) );
 		add_filter( 'the_content', array( &$this, 'display' ) );
+		add_action( 'comment_form', array( &$this, 'display_comment_vote' ) );
 	}	
 
 	/**
@@ -433,6 +434,36 @@ class Review_Score{
 		}
 
 		return $content;
+	}
+
+	/**
+	 *
+	 */
+	function display_comment_vote(){
+		global $post;
+
+    	$fields = $this->get_review_score( $post->ID );		
+		if( $this->is_display_review_score() && $this->comment_vote_support() && !empty( $fields ) ):
+		?>
+            <div class="review-score-wrap">
+                <!-- <h2 class="section-title review-score-title" style="">Review Score</h2> -->
+                <div class="review-score-content" style="padding-left: 0; font-size: .7em;">
+                <?php foreach ($fields as $key => $field) { ?>
+                    <div class="review-score-item">
+                        <div class="review-score-item-label"><?php echo $field['label']; ?></div>
+                        <div class="review-score-item-score"><?php echo $field['value']; ?></div>
+                        <div class="review-score-item-bar" data-score="<?php echo $field['value']; ?>">
+                        	<?php echo $this->score_to_stars( $field["value"] ); ?>
+                        </div>
+                        <div class="review-score-item-select">
+                        	<?php $this->select_score( $field['key'], $field['value'] ); ?>
+                        </div>
+                    </div>
+        		<?php } ?>
+                </div>
+            </div>
+		<?php
+		endif;
 	}
 
 	/**
