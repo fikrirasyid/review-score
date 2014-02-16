@@ -98,8 +98,20 @@
 	.review-score-item{
 		font-size: .8em;
 	}
-	
+
 	.review-score-star{
 		cursor: pointer;
+	}
+
+	.review-score-message{
+		padding: 5px 10px;
+		background: red;
+		color: white;
+		margin-bottom: 10px;
+
+		p{
+			margin-bottom: 0;
+			font-size: 14px;
+		}
 	}
 }
