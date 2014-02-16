@@ -373,14 +373,14 @@ class Review_Score{
 			// Mark current user ID
 			if( is_user_logged_in() ){
 				$current_user_id = $current_user->data->ID;
-				$voters = get_post_meta( $_POST['comment_post_ID'], $this->prefix_label . 'voters', true );
+				$voters = get_post_meta( $_POST['comment_post_ID'], '_review_score_voters', true );
 				if( empty( $voters ) || !isset( $voters ) ){
 					$voters = array();
 				}
 				array_push( $voters, $current_user_id );
 
 				// Save recently added voters information
-				update_post_meta( $_POST['comment_post_ID'], $this->prefix_label . 'voters', $voters );
+				update_post_meta( $_POST['comment_post_ID'], '_review_score_voters', $voters );
 			}
 		}
 
@@ -567,7 +567,7 @@ class Review_Score{
 		}
 
 		// If user has voted and we're setting it so
-		$voters = get_post_meta( $post->ID, $this->prefix_label . 'voters', true );
+		$voters = get_post_meta( $post->ID, '_review_score_voters', true );
 		if( !is_array( $voters ) ){
 			$voters = array();
 		}
