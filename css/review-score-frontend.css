@@ -68,6 +68,19 @@
 .review-score-wrap .review-score-content .review-score-item .review-score-item-bar .review-score-star.starred {
   background: orange;
 }
-.review-score-wrap .review-score-content .review-score-item .review-score-item-select {
-  display: none;
+.review-score-wrap .review-score-content .review-score-item .review-score-item-select label {
+  display: inline-block;
+  width: 10%;
+  cursor: pointer;
+  padding-top: 7px;
+}
+.review-score-wrap .review-score-content .review-score-item .review-score-item-select label input {
+  pointer: cursor;
+}
+
+#respond .review-score-item {
+  font-size: .8em;
+}
+#respond .review-score-star {
+  cursor: pointer;
 }

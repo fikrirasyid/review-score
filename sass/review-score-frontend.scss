@@ -79,8 +79,27 @@
 			}
 
 			.review-score-item-select{
-				display: none;
+				label{
+					display: inline-block;
+					width: 10%;
+					cursor: pointer;
+					padding-top: 7px;
+
+					input{
+						pointer: cursor;
+					}
+				}
 			}
 		}
+	}
+}
+
+#respond{
+	.review-score-item{
+		font-size: .8em;
+	}
+	
+	.review-score-star{
+		cursor: pointer;
 	}
 }
