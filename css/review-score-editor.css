@@ -30,6 +30,10 @@
 #review-score .review-aspects td .review-score-scale {
   color: #afafaf;
 }
+#review-score .review-aspects td label {
+  display: inline-block;
+  width: 10%;
+}
 #review-score .review-aspects tfoot td {
   padding: 10px 10px;
 }
