@@ -60,10 +60,24 @@ class Review_Score{
 	}
 
 	/**
+	 * Limit vote to once for each user
+	 */
+	function only_vote_once(){
+		return true;
+	}
+
+	/**
 	 * Message for non logged in user on vote section
 	 */
 	function message_for_non_logged_in_visitor(){
 		return 'Please log in to vote for this item.';
+	}
+
+	/**
+	 * Message for voted user: user can only vote once
+	 */
+	function message_for_voted_user(){
+		return 'You have voted for this item. Thank you.';
 	}
 
 	/**
@@ -300,7 +314,7 @@ class Review_Score{
 	 * Hook vote-saving mechanism
 	 */ 
 	function vote_save( $comment_id ){
-		global $wpdb;
+		global $wpdb, $current_user;
 
 		$post_id = $_POST['comment_post_ID'];
 		$prefix_length = strlen( $this->prefix_label );
@@ -355,6 +369,19 @@ class Review_Score{
 			$review_score_count = count( $review_score_total );
 			$review_score_avg = $review_score_sum / $review_score_count;
 			update_post_meta( $_POST['comment_post_ID'], '_review_score_average', $review_score_avg );		
+
+			// Mark current user ID
+			if( is_user_logged_in() ){
+				$current_user_id = $current_user->data->ID;
+				$voters = get_post_meta( $_POST['comment_post_ID'], $this->prefix_label . 'voters', true );
+				if( empty( $voters ) || !isset( $voters ) ){
+					$voters = array();
+				}
+				array_push( $voters, $current_user_id );
+
+				// Save recently added voters information
+				update_post_meta( $_POST['comment_post_ID'], $this->prefix_label . 'voters', $voters );
+			}
 		}
 
 		return;
@@ -524,7 +551,7 @@ class Review_Score{
 	 *
 	 */
 	function display_comment_vote(){
-		global $post;
+		global $post, $current_user;
 
     	$fields = $this->get_review_score( $post->ID );		
 		if( $this->is_display_review_score() && $this->comment_vote_support() && !empty( $fields ) ):		
@@ -534,6 +561,21 @@ class Review_Score{
 			?>
 			<div id="review-score-vote-message" class="review-score-message not-logged-in">
 				<p><?php echo $this->message_for_non_logged_in_visitor(); ?></p>
+			</div>
+			<?php
+			return;
+		}
+
+		// If user has voted and we're setting it so
+		$voters = get_post_meta( $post->ID, $this->prefix_label . 'voters', true );
+		if( !is_array( $voters ) ){
+			$voters = array();
+		}
+
+		if( is_user_logged_in() && in_array( $current_user->data->ID, $voters ) ){
+			?>
+			<div id="review-score-voted-message" class="review-score-message not-logged-in">
+				<p><?php echo $this->message_for_voted_user(); ?></p>
 			</div>
 			<?php
 			return;
