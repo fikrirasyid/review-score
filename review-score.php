@@ -53,6 +53,20 @@ class Review_Score{
 	}
 
 	/**
+	 * Limit vote to logged in user only
+	 */
+	function enable_guest_to_vote(){
+		return false;
+	}
+
+	/**
+	 * Message for non logged in user on vote section
+	 */
+	function message_for_non_logged_in_visitor(){
+		return 'Please log in to vote for this item.';
+	}
+
+	/**
 	 * Hooking methods to WP environment
 	 * 
 	 * @since 0.1
@@ -513,7 +527,18 @@ class Review_Score{
 		global $post;
 
     	$fields = $this->get_review_score( $post->ID );		
-		if( $this->is_display_review_score() && $this->comment_vote_support() && !empty( $fields ) ):
+		if( $this->is_display_review_score() && $this->comment_vote_support() && !empty( $fields ) ):		
+
+		// Only display comment field to logged in user
+		if( is_user_logged_in() == $this->enable_guest_to_vote() ){
+			?>
+			<div id="review-score-vote-message" class="review-score-message not-logged-in">
+				<p><?php echo $this->message_for_non_logged_in_visitor(); ?></p>
+			</div>
+			<?php
+			return;
+		}
+
 		?>
             <div class="review-score-wrap">
                 <!-- <h2 class="section-title review-score-title" style="">Review Score</h2> -->
