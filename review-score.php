@@ -358,7 +358,7 @@ class Review_Score{
 			$name = '{1}';
 		}
 
-		for ($i = 0; $i <= $this->review_scale ; $i++) { 
+		for ($i = 1; $i <= $this->review_scale ; $i++) { 
 			if( $i == intval( $selected ) ){
 				echo "<label for='{$name}_{$i}'><input type='radio' id='{$name}_{$i}' name='$name' value='$i' checked='checked'> $i </label>&nbsp;&nbsp;&nbsp;";
 			} else {
