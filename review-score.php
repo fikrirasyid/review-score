@@ -66,6 +66,7 @@ class Review_Score{
 		add_action( 'wp_head', array( &$this, 'styling_frontend' ) );
 		add_filter( 'the_content', array( &$this, 'display' ) );
 		add_action( 'comment_form', array( &$this, 'display_comment_vote' ) );
+		add_action( 'comment_post', array( &$this, 'vote_save' ) );
 	}	
 
 	/**
@@ -271,6 +272,70 @@ class Review_Score{
 		$review_score_count = count( $review_score_total );
 		$review_score_avg = $review_score_sum / $review_score_count;
 		update_post_meta( $post_id, '_review_score_average', $review_score_avg );
+	}
+
+	/**
+	 * Hook vote-saving mechanism
+	 */ 
+	function vote_save( $comment_id ){
+		global $wpdb;
+
+		$post_id = $_POST['comment_post_ID'];
+		$prefix_length = strlen( $this->prefix_label );
+
+		// Is this vote?
+		$is_vote = false;
+
+		// Collect all _review_score_label, calculate its average
+		$review_score_total = array();		
+
+		// Save each metadata to the database
+		foreach ($_POST as $key => $field) {
+			if( substr( $key, 0, $prefix_length) == $this->prefix_label ){
+				// Prevent double meta submission
+				$existing_comment_meta = get_comment_meta( $comment_id, $key, true );
+				if( $existing_comment_meta ){
+					break;
+				}
+
+				// Yes, this is vote
+				$is_vote = true;				
+
+				// Save comment metadata
+				$add_comment_meta = add_comment_meta( $comment_id, $key, intval( $field ) );
+
+				// Get all value of existing key for given post
+				$sql = $wpdb->prepare( "SELECT m.meta_value FROM $wpdb->comments c LEFT JOIN $wpdb->commentmeta m ON (m.comment_id = c.comment_ID) WHERE c.comment_post_id = %d AND m.meta_key = %s", $_POST['comment_post_ID'], $key );
+				$sql_result = $wpdb->get_results( $sql );
+
+				// Convert sql result into simple array
+				$scores = array();
+				foreach ($sql_result as $row) {
+					array_push( $scores, $row->meta_value);
+				}
+
+				// Calculate value
+				$scores_sum = array_sum( $scores );
+				$scores_count = count( $scores );
+				$scores_avg = round( $scores_sum / $scores_count );
+
+				// Push the avg value
+				array_push( $review_score_total, $scores_avg );
+
+				// Save the value
+				$update_post_meta = update_post_meta( $_POST['comment_post_ID'], $key, $scores_avg );
+			}
+		}
+
+		if( $is_vote ){
+			// Calculate the average then save it
+			$review_score_sum = array_sum( $review_score_total );
+			$review_score_count = count( $review_score_total );
+			$review_score_avg = $review_score_sum / $review_score_count;
+			update_post_meta( $_POST['comment_post_ID'], '_review_score_average', $review_score_avg );		
+		}
+
+		return;
 	}
 
 	/**
