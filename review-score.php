@@ -513,12 +513,12 @@ class Review_Score{
                 <?php foreach ($fields as $key => $field) { ?>
                     <div class="review-score-item">
                         <div class="review-score-item-label"><?php echo $field['label']; ?></div>
-                        <div class="review-score-item-score"><?php echo $field['value']; ?></div>
-                        <div class="review-score-item-bar" data-score="<?php echo $field['value']; ?>">
-                        	<?php echo $this->score_to_stars( $field["value"] ); ?>
+                        <div class="review-score-item-score">-</div>
+                        <div class="review-score-item-bar" data-score="0">
+                        	<?php echo $this->score_to_stars( 0 ); ?>
                         </div>
                         <div class="review-score-item-select">
-                        	<?php $this->select_score( $key, $field['value'] ); ?>
+                        	<?php $this->select_score( $key ); ?>
                         </div>
                     </div>
         		<?php } ?>
