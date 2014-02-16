@@ -320,14 +320,14 @@ class Review_Score{
 	 */	
 	function get_review_score( $post_id ){
 		$review_score = array();
-		$post_metas = get_post_custom( $post->ID );
+		$post_metas = get_post_custom( $post_id );
 		foreach ($post_metas as $key => $post_meta) {
 			if( $this->is_review_score_label( $key ) ){		
 				$review_score[$key] = array( 'label' => $this->_prepare_review_score_key( $key ), 'value' => $post_meta[0] );
 			}
 		}
 
-		return $this->_prepare_get_review_score( $review_score );
+		return $this->_prepare_get_review_score( $review_score, $post_id );
 	}
 
 	/**
@@ -337,9 +337,7 @@ class Review_Score{
 	 * 
 	 * @return void
 	 */	
-	function _prepare_get_review_score( $review_score ){
-		global $post;
-
+	function _prepare_get_review_score( $review_score, $post_id ){
 		if( $this->predefined_review_score_fields() ){
 			$fields = $this->predefined_review_score_fields();
 
@@ -348,7 +346,7 @@ class Review_Score{
 			foreach ( $fields as $key => $field ) {
 				$meta_key = $this->prefix_label . str_replace(' ', '_', $field );
 
-				$predefined_review_score[ $meta_key ] = array( 'label' => $field, 'value' => get_post_meta( $post->ID, $meta_key, true ) );
+				$predefined_review_score[ $meta_key ] = array( 'label' => $field, 'value' => get_post_meta( $post_id, $meta_key, true ) );
 			}
 			return $predefined_review_score;			
 		} else {
@@ -376,10 +374,14 @@ class Review_Score{
 	 *
 	 * @return bool
 	 */
-	function is_use_review_score(){
+	function is_use_review_score( $post_id = false ){
 		global $post;
 
-		if( get_post_meta( $post->ID, '_review_score_use', true ) == 'yes' ){
+		if( !$post_id ){
+			$post_id = $post->ID;
+		}
+
+		if( get_post_meta( $post_id, '_review_score_use', true ) == 'yes' ){
 			return true;
 		} else {
 			return false;
@@ -391,10 +393,8 @@ class Review_Score{
 	 *
 	 * @return bool
 	 */
-	function is_display_review_score(){
-		global $post;
-
-		if( $this->is_use_review_score() && is_singular( $this->post_type_support ) ){
+	function is_display_review_score( $post_id = false ){
+		if( $this->is_use_review_score( $post_id ) && is_singular( $this->post_type_support ) ){
 			return true;
 		} else {
 			return false;
