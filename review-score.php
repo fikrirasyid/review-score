@@ -456,7 +456,7 @@ class Review_Score{
                         	<?php echo $this->score_to_stars( $field["value"] ); ?>
                         </div>
                         <div class="review-score-item-select">
-                        	<?php $this->select_score( $field['key'], $field['value'] ); ?>
+                        	<?php $this->select_score( $key, $field['value'] ); ?>
                         </div>
                     </div>
         		<?php } ?>
