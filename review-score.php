@@ -162,7 +162,7 @@ class Review_Score{
 									<tr>
 										<td><?php echo $aspect['label']; ?></td>
 										<td>
-											<?php $this->select_score( $key, $aspect['value'] ); ?> / 10</span>
+											<?php $this->select_score( $key, $aspect['value'] ); ?></span>
 										</td>
 										<?php if( !$this->predefined_review_score_fields() ) : ?>
 										<td>
@@ -282,19 +282,16 @@ class Review_Score{
 	 */
 	function select_score( $name = 'aspect_name', $selected = false, $js_template = false ){
 		if( $js_template ){
-		echo '<select name="{1}" class="">';
-		} else {
-		echo '<select name="'. $name .'" class="">';			
+			$name = '{1}';
 		}
 
-		for ($i = 1; $i <= $this->review_scale ; $i++) { 
+		for ($i = 0; $i <= $this->review_scale ; $i++) { 
 			if( $i == intval( $selected ) ){
-				echo '<option value="'. $i .'" selected="selected">'. $i .'</option>';				
+				echo "<label for='{$name}_{$i}'><input type='radio' id='{$name}_{$i}' name='$name' value='$i' checked='checked'> $i </label>&nbsp;&nbsp;&nbsp;";
 			} else {
-				echo '<option value="'. $i .'">'. $i .'</option>';
+				echo "<label for='{$name}_{$i}'><input type='radio' id='{$name}_{$i}' name='$name' value='$i'> $i </label>&nbsp;&nbsp;&nbsp;";
 			}
 		}
-		echo '<select>';
 	}
 
 	/**
