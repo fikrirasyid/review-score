@@ -98,8 +98,16 @@ class Review_Score{
 	 * @return void
 	 */	
 	function styling_frontend(){
+		global $post;
 		wp_register_style( 'review-score-frontend', REVIEW_SCORE_URL . '/css/review-score-frontend.css', array(), false, 'screen' );
+		wp_register_script( 'review-score-frontend', REVIEW_SCORE_URL . '/js/review-score-frontend.js', array( 'jquery' ), false, false );
 	    wp_enqueue_style( 'review-score-frontend' );
+
+	    // The front end js is only relevant for voting mechanism
+	    $fields = $this->get_review_score( $post->ID );		
+		if( $this->is_display_review_score() && $this->comment_vote_support() && !empty( $fields ) ){
+			wp_enqueue_script( 'review-score-frontend' );					
+		}
 	}
 
 	/**
