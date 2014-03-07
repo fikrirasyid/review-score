@@ -127,6 +127,11 @@ class Review_Score{
 	 */	
 	function styling_frontend(){
 		global $post;
+
+		// If this isn't a single page, bail
+		if( !is_singular() )
+			return;
+
 		wp_register_style( 'review-score-frontend', REVIEW_SCORE_URL . '/css/review-score-frontend.css', array(), false, 'screen' );
 		wp_register_script( 'review-score-frontend', REVIEW_SCORE_URL . '/js/review-score-frontend.js', array( 'jquery' ), false, false );
 	    wp_enqueue_style( 'review-score-frontend' );
