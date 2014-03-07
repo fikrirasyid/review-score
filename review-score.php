@@ -437,6 +437,11 @@ class Review_Score{
 	function get_review_score( $post_id ){
 		$review_score = array();
 		$post_metas = get_post_custom( $post_id );
+
+		if( !$post_metas ){
+			return array();
+		}
+
 		foreach ($post_metas as $key => $post_meta) {
 			if( $this->is_review_score_label( $key ) ){		
 				$review_score[$key] = array( 'label' => $this->_prepare_review_score_key( $key ), 'value' => $post_meta[0] );
