@@ -498,6 +498,12 @@ class Review_Score{
 	function is_use_review_score( $post_id = false ){
 		global $post;
 
+		// If this is a newly created post
+		if( !isset( $post->ID ) ){
+			return false;
+		}
+
+		// If this is saved post
 		if( !$post_id ){
 			$post_id = $post->ID;
 		}
