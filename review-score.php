@@ -22,14 +22,16 @@ if (!defined('REVIEW_SCORE_URL'))
     define('REVIEW_SCORE_URL', plugin_dir_url( __FILE__ ));	
 
 class Review_Score{
-	public $post_type_support;
+	public $post_types;
 	public $review_scale;
+	public $prefix;
 	public $prefix_label;
 
 	function __construct(){
-		$this->post_type_support = $this->post_type_support();
-		$this->review_scale = 10;
-		$this->prefix_label = '_review_score_label_';
+		$this->post_types 			= $this->post_types();
+		$this->review_scale 		= 10;
+		$this->prefix 				= 'review_score_';
+		$this->prefix_label 		= '_review_score_label_';
 		$this->hook();
 	}
 
@@ -38,63 +40,80 @@ class Review_Score{
 	 * 
 	 * @since 0.1
 	 * 
-	 * @return void
+	 * @return array
 	 */	
-	function post_type_support(){
-		return "post";
+	function post_types(){
+		return apply_filters( "{$this->prefix}post_types", array( 'post' ) );
 	}
 
+	/**
+	 * Define support for comment based vote
+	 * 
+	 * @return bool
+	 */
 	function comment_vote_support(){
-		return false;
+		return apply_filters( "{$this->prefix}comment_vote_support", false );
 	}
 
-	function predefined_review_score_fields(){
-		return false;
+	/**
+	 * Setup predefined fields
+	 * 
+	 * @return array|bool
+	 */
+	function predefined_fields(){
+		return apply_filters( "{$this->prefix}predefined_fields", false );
 	}
 
 	/**
 	 * Limit vote to logged in user only
+	 * 
+	 * @return bool
 	 */
 	function enable_guest_to_vote(){
-		return false;
+		return apply_filters( "{$this->prefix}enable_guest_to_vote", false );
 	}
 
 	/**
 	 * Limit vote to once for each user
+	 * 
+	 * @return bool
 	 */
 	function only_vote_once(){
-		return true;
+		return apply_filters( "{$this->prefix}only_vote_once", true );
 	}
 
 	/**
 	 * Message for non logged in user on vote section
+	 * 
+	 * @return string
 	 */
 	function message_for_non_logged_in_visitor(){
-		return 'Please log in to vote for this item.';
+		return apply_filters( "{$this->prefix}message_for_non_logged_in_visitor", __( 'Please log in to vote for this item.', 'review-score' ) );
 	}
 
 	/**
 	 * Message for voted user: user can only vote once
+	 * 
+	 * @return string
 	 */
 	function message_for_voted_user(){
-		return 'You have voted for this item. Thank you.';
+		return apply_filters( "{$this->prefix}message_for_voted_user", __( 'You have voted for this item. Thank you.', 'review-score' ) );
 	}
 
 	/**
 	 * Hooking methods to WP environment
 	 * 
-	 * @since 0.1
-	 * 
 	 * @return void
 	 */
 	function hook(){
-		add_action( 'admin_print_styles', array( &$this, 'styling_editor' ) );
-		add_action( 'add_meta_boxes', array( &$this, 'meta_boxes_add' ) );
-		add_action( 'save_post', array( &$this, 'meta_box_save' ) );
-		add_action( 'wp_head', array( &$this, 'styling_frontend' ) );
-		add_filter( 'the_content', array( &$this, 'display' ) );
-		add_action( 'comment_form', array( &$this, 'display_comment_vote' ) );
-		add_action( 'comment_post', array( &$this, 'vote_save' ) );
+		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_dashboard_scripts_styles' ) );
+		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts_styles' ) );
+
+		add_action( 'add_meta_boxes', array( $this, 'meta_boxes_add' ) );
+		add_action( 'save_post', array( $this, 'meta_box_save' ) );
+		add_filter( 'the_content', array( $this, 'display' ) );
+		add_action( 'comment_form', array( $this, 'display_comment_vote' ) );
+		add_action( 'comment_post', array( $this, 'vote_save' ) );
 	}	
 
 	/**
@@ -104,10 +123,11 @@ class Review_Score{
 	 * 
 	 * @return void
 	 */
-	function styling_editor(){
+	function enqueue_dashboard_scripts_styles(){
 		$screen = get_current_screen();
 
-		if( isset( $screen->id ) && $screen->id == $this->post_type_support ){
+		if( isset( $screen->id ) && in_array( $screen->id, $this->post_types ) ){
+
 			// register style and script
 			wp_register_style( 'review-score-editor', REVIEW_SCORE_URL . '/css/review-score-editor.css', array(), false, 'screen' );
 			wp_register_script( 'review-score-editor', REVIEW_SCORE_URL . '/js/review-score-editor.js', array( 'jquery' ), false, false );
@@ -115,6 +135,7 @@ class Review_Score{
 			// call the style and script
 		    wp_enqueue_style( 'review-score-editor' );
 			wp_enqueue_script( 'review-score-editor' );			
+
 		}
 	}
 
@@ -125,7 +146,7 @@ class Review_Score{
 	 * 
 	 * @return void
 	 */	
-	function styling_frontend(){
+	function enqueue_scripts_styles(){
 		global $post;
 
 		// If this isn't a single page, bail
@@ -151,7 +172,9 @@ class Review_Score{
 	 * @return void
 	 */	
 	function meta_boxes_add(){
-		add_meta_box('review-score', __( 'Review Score', 'review_score'), array( &$this, 'meta_box' ), $this->post_type_support );		
+		foreach ( $this->post_types as $post_type ) {
+			add_meta_box('review-score', __( 'Review Score', 'review-score'), array( $this, 'meta_box' ), $post_type );
+		}
 	}
 
 	/**
@@ -179,17 +202,17 @@ class Review_Score{
 		// Get stored value
 		$review_score = $this->get_review_score( $post->ID );
 		?>
-			<p><label for="_review_score_use"><input type="checkbox" name="_review_score_use" value="yes" id="_review_score_use" <?php echo $review_score_use_check; ?>>Use Review Score for this content.</label></p>
+			<p><label for="_review_score_use"><input type="checkbox" name="_review_score_use" value="yes" id="_review_score_use" <?php echo $review_score_use_check; ?>><?php _e( 'Use Review Score for this content.', 'review-score' ); ?></label></p>
 			
 			<div id="review-score-post-settings" <?php echo $review_score_visibility; ?>>
-				<h3>Review Aspects</h3>
+				<h3><?php _e( 'Review Aspects', 'review-score' ); ?></h3>
 				<table cellspacing="0" class="review-aspects">
 					<thead>
 						<tr>
-							<th>Aspects</th>
-							<th>Score</th>
+							<th><?php _e( 'Aspects', 'review-score' ); ?></th>
+							<th><?php _e( 'Score', 'review-score' ); ?></th>
 
-							<?php if( !$this->predefined_review_score_fields() ) : ?>
+							<?php if( !$this->predefined_fields() ) : ?>
 							<th></th>
 							<?php endif; ?>
 						</tr>
@@ -197,7 +220,7 @@ class Review_Score{
 					<tbody>
 						<?php 
 							if( empty( $review_score ) ){
-								echo '<tr id="no-review-score"><td colspan="3">no review score, yet.</td></tr>';
+								echo '<tr id="no-review-score"><td colspan="3">'. __( 'no review score, yet.', 'review-score' ) .'</td></tr>';
 							} else {
 								foreach ($review_score as $key => $aspect) {
 									?>
@@ -206,9 +229,9 @@ class Review_Score{
 										<td>
 											<?php $this->select_score( $key, $aspect['value'] ); ?></span>
 										</td>
-										<?php if( !$this->predefined_review_score_fields() ) : ?>
+										<?php if( !$this->predefined_fields() ) : ?>
 										<td>
-											<a href="#" class="remove-review-aspect">Remove</a>
+											<a href="#" class="remove-review-aspect"><?php _e( 'Remove', 'review-score' ); ?></a>
 										</td>
 										<?php endif; ?>
 									</tr>
@@ -220,7 +243,7 @@ class Review_Score{
 					<tfoot>
 						<tr>
 							<td>
-								Average Score
+								<?php _e( 'Average Score', 'review-score' ); ?>
 							</td>
 							<td colspan="2">
 								<?php echo get_post_meta( $post->ID, '_review_score_average', true ); ?>
@@ -229,11 +252,11 @@ class Review_Score{
 					</tfoot> 					
 				</table>
 
-				<?php if( !$this->predefined_review_score_fields() ): ?>
-				<h3>Add New Aspect</h3>
+				<?php if( !$this->predefined_fields() ): ?>
+				<h3><?php _e( 'Add New Aspect', 'review-score' ); ?></h3>
 				<p>
 					<input id="new-review-aspect" type="text" placeholder="Type New Aspect Here..">
-					<button id="add-review-aspect" class="button">Add</button>
+					<button id="add-review-aspect" class="button"><?php _e( 'Add', 'review-score' ); ?></button>
 				</p>				
 				<?php endif; ?>
 			</div><!-- #review-score-post-settings -->
@@ -245,7 +268,7 @@ class Review_Score{
 						<?php $this->select_score( '', false, true ); ?> / 10</span>
 					</td>
 					<td>
-						<a href="#" class="remove-review-aspect">Remove</a>
+						<a href="#" class="remove-review-aspect"><?php _e( 'Remove', 'review-score' ); ?></a>
 					</td>
 				</tr>
 			</script>
@@ -263,7 +286,7 @@ class Review_Score{
 		$screen = get_current_screen();
 
 		// If this isn't ticket editor, bail
-		if ($screen != null && $screen->post_type != $this->post_type_support ) return;
+		if ($screen != null && in_array( $screen->post_type, $this->post_types ) ) return;
 
 		// Bail if we're doing an auto save
 		if( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return;
@@ -459,8 +482,8 @@ class Review_Score{
 	 * @return void
 	 */	
 	function _prepare_get_review_score( $review_score, $post_id ){
-		if( $this->predefined_review_score_fields() ){
-			$fields = $this->predefined_review_score_fields();
+		if( $this->predefined_fields() ){
+			$fields = $this->predefined_fields();
 
 			$predefined_review_score = array();
 
@@ -521,7 +544,7 @@ class Review_Score{
 	 * @return bool
 	 */
 	function is_display_review_score( $post_id = false ){
-		if( $this->is_use_review_score( $post_id ) && is_singular( $this->post_type_support ) ){
+		if( $this->is_use_review_score( $post_id ) && is_singular( $this->post_types ) ){
 			return true;
 		} else {
 			return false;
@@ -538,11 +561,11 @@ class Review_Score{
 			$scores = $this->get_review_score( $post->ID );
 
 			$review_score = '<div class="review-score-wrap">';
-			$review_score .= '<h2 class="section-title review-score-title">'. apply_filters( "review_score_title", __( "Review Score", "review_score" ) ) .'</h2>';
+			$review_score .= '<h2 class="section-title review-score-title">'. apply_filters( "{$this->prefix}title_label", __( "Review Score", "review-score" ) ) .'</h2>';
 			$review_score .= '<div class="review-score-content">';
 			if( !empty( $scores ) ){
 				$review_score .= '<div class="review-score-average">';
-				$review_score .= '<div class="review-score-average-label">' . apply_filters( "review_score_average_score_label", __( "Average Score", "review_score" ) ) . '</div>';
+				$review_score .= '<div class="review-score-average-label">' . apply_filters( "{$this->prefix}average_score_label", __( "Average Score", "review-score" ) ) . '</div>';
 				$review_score .= '<div class="review-score-average-score">' . get_post_meta( $post->ID, '_review_score_average', true ) . '</div>';
 				$review_score .= '</div>';
 
