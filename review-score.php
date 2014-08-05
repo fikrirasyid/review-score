@@ -637,4 +637,4 @@ class Review_Score{
 		return $stars;
 	}
 }
-$review_score = new Review_Score();
+new Review_Score;
