@@ -7,12 +7,13 @@
 .review-score-wrap .review-score-content {
   position: relative;
   padding-left: 120px;
+  padding-bottom: 20px;
 }
 .review-score-wrap .review-score-content .review-score-average {
   display: block;
-  width: 70px;
+  width: 100px;
   height: 107px;
-  padding: 15px;
+  padding: 15px 0;
   background: green;
   position: absolute;
   top: 0;
@@ -24,6 +25,7 @@
 }
 .review-score-wrap .review-score-content .review-score-average .review-score-average-label {
   margin-bottom: 10px;
+  padding: 0 15px;
 }
 .review-score-wrap .review-score-content .review-score-average .review-score-average-score {
   font-size: 55px;
