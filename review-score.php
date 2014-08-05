@@ -26,7 +26,6 @@ if (!defined('REVIEW_SCORE_URL'))
  * Requiring external files
  */
 require_once( REVIEW_SCORE_DIR . '/includes/class-review-score-settings.php' );
-require_once( REVIEW_SCORE_DIR . '/includes/class-review-score-messages.php' );
 require_once( REVIEW_SCORE_DIR . '/includes/class-review-score.php' );
 require_once( REVIEW_SCORE_DIR . '/includes/class-review-score-dashboard-setup.php' );
 require_once( REVIEW_SCORE_DIR . '/includes/class-review-score-frontend-setup.php' );

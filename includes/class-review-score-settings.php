@@ -20,39 +20,12 @@ class Review_Score_Settings{
 	}
 
 	/**
-	 * Define support for comment based vote
-	 * 
-	 * @return bool
-	 */
-	function comment_vote_support(){
-		return apply_filters( "{$this->prefix}comment_vote_support", false );
-	}
-
-	/**
 	 * Setup predefined fields
 	 * 
 	 * @return array|bool
 	 */
 	function predefined_fields(){
 		return apply_filters( "{$this->prefix}predefined_fields", false );
-	}
-
-	/**
-	 * Limit vote to logged in user only
-	 * 
-	 * @return bool
-	 */
-	function enable_guest_to_vote(){
-		return apply_filters( "{$this->prefix}enable_guest_to_vote", false );
-	}
-
-	/**
-	 * Limit vote to once for each user
-	 * 
-	 * @return bool
-	 */
-	function only_vote_once(){
-		return apply_filters( "{$this->prefix}only_vote_once", true );
 	}
 
 	/**

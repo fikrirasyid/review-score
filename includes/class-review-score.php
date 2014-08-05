@@ -4,8 +4,7 @@ class Review_Score{
 	public $messages;
 
 	function __construct(){
-		$this->settings 			= new Review_Score_Settings;
-		$this->messages 			= new Review_Score_Messages;
+		$this->settings = new Review_Score_Settings;
 	}
 
 	/**

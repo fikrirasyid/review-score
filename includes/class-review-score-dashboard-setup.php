@@ -25,12 +25,8 @@ class Review_Score_Dashboard_Setup{
 		if( isset( $screen->id ) && in_array( $screen->id, $this->settings->post_types() ) ){
 
 			// register style and script
-			wp_register_style( 'review-score-editor', REVIEW_SCORE_URL . '/css/review-score-editor.css', array(), false, 'screen' );
-			wp_register_script( 'review-score-editor', REVIEW_SCORE_URL . '/js/review-score-editor.js', array( 'jquery' ), false, false );
-
-			// call the style and script
-		    wp_enqueue_style( 'review-score-editor' );
-			wp_enqueue_script( 'review-score-editor' );			
+			wp_enqueue_style( 'review-score-editor', REVIEW_SCORE_URL . '/css/review-score-editor.css', array(), false, 'screen' );
+			wp_enqueue_script( 'review-score-editor', REVIEW_SCORE_URL . '/js/review-score-editor.js', array( 'jquery' ), false, false );
 
 		}
 	}
