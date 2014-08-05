@@ -117,7 +117,7 @@ class Review_Score_Dashboard_Setup{
 								<?php _e( 'Average Score', 'review-score' ); ?>
 							</td>
 							<td colspan="2">
-								<?php echo get_post_meta( $post->ID, '_review_score_average', true ); ?>
+								<?php echo round( get_post_meta( $post->ID, '_review_score_average', true ), 2 ); ?>
 							</td>
 						</tr>
 					</tfoot> 					

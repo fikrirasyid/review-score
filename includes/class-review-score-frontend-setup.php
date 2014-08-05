@@ -57,7 +57,7 @@ class Review_Score_Frontend_Setup{
 			if( !empty( $scores ) ){
 				$review_score .= '<div class="review-score-average">';
 				$review_score .= '<div class="review-score-average-label">' . apply_filters( "{$this->settings->prefix}average_score_label", __( "Average Score", "review-score" ) ) . '</div>';
-				$review_score .= '<div class="review-score-average-score">' . get_post_meta( $post->ID, '_review_score_average', true ) . '</div>';
+				$review_score .= '<div class="review-score-average-score">' . round( get_post_meta( $post->ID, '_review_score_average', true ), 2 ) . '</div>';
 				$review_score .= '</div>';
 
 				// Print review score data
