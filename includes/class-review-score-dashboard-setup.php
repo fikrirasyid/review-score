@@ -150,6 +150,10 @@ class Review_Score_Dashboard_Setup{
 	 * @return void
 	 */	
 	function meta_box_save( $post_id ){
+		// Sometimes save_post is initiated from the front end. Bail if it happens
+		if( !function_exists( 'get_current_screen' ) )
+			return;
+
 		$screen = get_current_screen();
 
 		// If this isn't review score editor, bail
